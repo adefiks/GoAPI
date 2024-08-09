@@ -1,6 +1,8 @@
 package tools
 
 import (
+	"sync"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -23,14 +25,24 @@ type DatabaseInterface interface {
 	SetupDatabase() error
 }
 
-// NewDatabase creates a new instance of the DatabaseInterface.
-func NewDatabase() (*DatabaseInterface, error) {
-	var db DatabaseInterface = &mockDB{}
-	err := db.SetupDatabase()
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
+// instance is a singleton instance of the DatabaseInterface.
+var (
+	instance *DatabaseInterface
+	once     sync.Once
+)
 
-	return &db, nil
+// NewDatabase creates a Singleton of the DatabaseInterface.
+func NewDatabase() (*DatabaseInterface, error) {
+	var err error
+	once.Do(func() {
+		var db DatabaseInterface = &mockDB{}
+		err = db.SetupDatabase()
+		if err != nil {
+			log.Error(err)
+			instance = nil
+		} else {
+			instance = &db
+		}
+	})
+	return instance, err
 }
