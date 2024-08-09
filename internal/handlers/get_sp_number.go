@@ -24,7 +24,7 @@ func GetStoryPoints(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a new instance of the database interface
+	// Create a Singleton instance of the database interface
 	var database *tools.DatabaseInterface
 	database, err = tools.NewDatabase()
 	if err != nil {
