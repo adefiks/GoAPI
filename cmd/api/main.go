@@ -5,15 +5,14 @@ import (
 	"net/http"
 
 	"github.com/adefiks/GoAPI/internal/handlers"
-	"github.com/go-chi/chi"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	log.SetReportCaller(true) // Enable reporting of caller information in log messages
 
-	var r *chi.Mux = chi.NewRouter() // Create a new router using chi package
-	handlers.Handler(r)              // Register the handlers for the router
+	r := http.NewServeMux() // Create a new ServeMux
+	handlers.Handler(r)     // Register the handlers for the ServeMux
 
 	fmt.Println("Starting GO API server on port 8000")
 	fmt.Println(`
